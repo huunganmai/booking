@@ -21,6 +21,7 @@ function PhotosUploader ({addedPhotos, onChange}) {
 
     function uploadPhoto (e) {
         const files = e.target.files;
+        console.log(e)
         const data = new FormData();
         const fileLength = files.length;
         for (let i = 0; i < fileLength; i++) {
@@ -74,8 +75,8 @@ function PhotosUploader ({addedPhotos, onChange}) {
 }
 
 PhotosUploader.propTypes = {
-    addedPhotos: PropTypes.array.isRequired,
-    onChange: PropTypes.func.isRequired,
+    addedPhotos: PropTypes.array,
+    onChange: PropTypes.func,
 }
 
 export default PhotosUploader

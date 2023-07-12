@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import { Navigate } from "react-router-dom";
+import { Navigate, useParams} from "react-router-dom";
 
 import Title from "../Title";
 import Perks from "./Perks";  
 import PhotosUploader from "./PhotosUploader";
 
 function PlaceForm () {
+
     const [title, setTitle] = useState('');
     const [address, setAddress] = useState('');
     const [addedPhotos, setAddedPhotos] = useState([]);
@@ -18,11 +19,39 @@ function PlaceForm () {
     const [maxGuests, setMaxGuests] = useState(1);
     const [redirect, setRedirect] = useState('')
 
-    async function addNewPlace (e) {
+    const {id} = useParams();
+    useEffect(() => {
+        if(!id) {
+            return;
+        }
+        axios.get('/places/' + id)
+            .then(res => {
+                const {data} = res
+                setTitle(data.title)
+                setAddress(data.address)
+                setAddedPhotos(data.photos)
+                setDescription(data.description)
+                setPerks(data.perks)
+                setExtraInfo(data.extraInfo)
+                setCheckIn(data.checkIn)
+                setCheckOut(data.checkOut)
+                setMaxGuests(data.maxGuests)
+            })
+            .catch(err => console.log(err))
+    }, [id])
+
+    async function savePlace (e) {
         e.preventDefault();
         const placeData = {title, address, addedPhotos, description, perks, extraInfo, checkIn, checkOut, maxGuests}
-        await axios.post('/places/new', placeData);
-        setRedirect('/account/places')
+        if (id) {
+            await axios.put('places/new', {
+                id, ...placeData,
+            });
+            setRedirect('/account/places')
+        } else {
+            await axios.post('/places/new', placeData);
+            setRedirect('/account/places')
+        }
     }
 
     if (redirect) {
@@ -31,7 +60,7 @@ function PlaceForm () {
 
     return (
         <div>
-                    <form onSubmit={addNewPlace}>
+                    <form onSubmit={savePlace}>
                         <Title 
                         title={"Title"}
                         description={"Title for your place"}

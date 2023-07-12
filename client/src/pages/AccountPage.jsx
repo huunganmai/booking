@@ -1,27 +1,21 @@
 import { useContext, useState } from "react"
-import { Link, Navigate, useParams } from "react-router-dom"
+import { Link, Navigate, Outlet} from "react-router-dom"
 import axios from "axios"
 
 import { UserContext } from "../UserContext"
-import PlacesPage from "./PlacePage"
 import { HouseIcon, ListIcon, UserIcon } from "../components/Icons"
 
 export default function AccountPage() {
     const [redirect, setRedirect] = useState(null)
+    const [subpage, setSubpage] = useState('profile')
     const {ready, user, setUser} = useContext(UserContext)
-
-    let {subpage} = useParams()
-
-    if (subpage === undefined) {
-        subpage = 'profile'
-    }
 
     async function logout() {
         await axios.post('/logout')
         setRedirect('/')
         setUser(null)
     }
-    
+
     function linkClassed (type=null) {
         let classes = 'inline-flex py-2 px-6  rounded-full'
         if(type === subpage) {
@@ -48,15 +42,15 @@ export default function AccountPage() {
     return (
         <div>
             <nav className="w-full gap-2 flex justify-center mt-4">
-                <Link className={linkClassed('profile')} to={'/account'}>
+                <Link className={linkClassed('profile')} onClick={() => setSubpage('profile')} to={'/account/profile'} >
                     <UserIcon />
                     My profile
                 </Link>
-                <Link className={linkClassed('bookings')} to={'/account/bookings'}>
+                <Link className={linkClassed('bookings')} onClick={() => setSubpage('bookings')} to={'/account/bookings'}>
                     <ListIcon />
                     My bookings
                 </Link>
-                <Link className={linkClassed('places')} to={'/account/places'}>
+                <Link className={linkClassed('places')} onClick={() =>setSubpage('places')} to={'/account/places'}>
                     <HouseIcon />
                     My accommodations
                 </Link>
@@ -67,9 +61,7 @@ export default function AccountPage() {
                     <button onClick={logout} className="primary max-w-md mt-2" >Logout</button>
                 </div>
             )}
-            {subpage === 'places' && (
-                <PlacesPage/>
-            )}
+            <Outlet />
         </div>
     )
 }

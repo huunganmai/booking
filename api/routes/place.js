@@ -10,7 +10,9 @@ router.post(
   photosMiddleware.array("photos", 100),
   PlaceController.uploadPhotoFromComputer
 );
-
 router.post("/new", PlaceController.submitForm);
+router.put("/new", PlaceController.updatePlace);
+router.get("/:id", PlaceController.getOnePlace);
+router.get("/", PlaceController.getPlaces);
 
 module.exports = router;

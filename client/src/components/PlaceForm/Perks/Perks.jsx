@@ -22,27 +22,27 @@ function Perks ({selected, onChange}) {
             />
             <div className="gap-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
                 <label className="border flex gap-2 p-4 rounded-2xl items-center">
-                    <input type='checkbox' name="wifi" onChange={handleCbClick} />
+                    <input type='checkbox' checked={selected.includes('wifi')} name="wifi" onChange={handleCbClick} />
                     <WifiIcon/>
                     <span>Wifi</span>
                 </label>
                 <label className="border flex gap-2 p-4 rounded-2xl items-center">
-                    <input type='checkbox' name="parking" onChange={handleCbClick} />
+                    <input type='checkbox' checked={selected.includes('parking')} name="parking" onChange={handleCbClick} />
                     <ParkingIcon/>
                     <span>Free parking spot</span>
                 </label>
                 <label className="border flex gap-2 p-4 rounded-2xl items-center">
-                    <input type='checkbox' name="tv" onChange={handleCbClick} />
+                    <input type='checkbox' checked={selected.includes('tv')} name="tv" onChange={handleCbClick} />
                     <TiviIcon/>
                     <span>TV</span>
                 </label>
                 <label className="border flex gap-2 p-4 rounded-2xl items-center">
-                    <input type='checkbox' name="pets" onChange={handleCbClick} />
+                    <input type='checkbox' checked={selected.includes('pets')} name="pets" onChange={handleCbClick} />
                     <PetIcon/>
                     <span>Pets</span>
                 </label>
                 <label className="border flex gap-2 p-4 rounded-2xl items-center">
-                    <input type='checkbox' name="entrance" onChange={handleCbClick} />
+                    <input type='checkbox' checked={selected.includes('entrance')} name="entrance" onChange={handleCbClick} />
                     <EntranceIcon/>
                     <span>Entrance</span>
                 </label>

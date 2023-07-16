@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 const Place = require("../models/Place");
 
 class PlaceController {
-  // [POST] /places/new/upload-by-link
+  // [POST] /user-places/new/upload-by-link
   async uploadPhotoByLink(req, res, next) {
     const { link } = req.body;
     const newPath = path.resolve(__dirname, "../..") + "/uploads/";
@@ -23,7 +23,7 @@ class PlaceController {
     }
   }
 
-  // [POST] /places/new/upload-from-computer
+  // [POST] /user-places/new/upload-from-computer
   uploadPhotoFromComputer(req, res, next) {
     const uploadFiles = [];
     for (let i = 0; i < req.files.length; i++) {
@@ -38,7 +38,7 @@ class PlaceController {
     res.json(uploadFiles);
   }
 
-  // [POST] /places/new
+  // [POST] /user-places/new
   submitForm(req, res, next) {
     const { token } = req.cookies;
     const {
@@ -51,6 +51,7 @@ class PlaceController {
       checkIn,
       checkOut,
       maxGuests,
+      price,
     } = req.body;
 
     jwt.verify(token, process.env.JWT_SECRET, {}, async (err, userData) => {
@@ -66,12 +67,13 @@ class PlaceController {
         checkIn,
         checkOut,
         maxGuests,
+        price,
       });
       res.json(placeDoc);
     });
   }
 
-  // [GET] /places
+  // [GET] /user-places
   getPlaces(req, res, next) {
     const { token } = req.cookies;
     jwt.verify(token, process.env.JWT_SECRET, {}, async (err, userData) => {
@@ -82,14 +84,14 @@ class PlaceController {
     });
   }
 
-  // [GET] /places/:id
+  // [GET] /user-places/:id
   async getOnePlace(req, res, next) {
     const { id } = req.params;
     const placeData = await Place.findById(id);
     res.json(placeData);
   }
 
-  // [PUT] /places/:id
+  // [PUT] /user-places/:id
   async updatePlace(req, res, next) {
     const { token } = req.cookies;
     const {
@@ -103,6 +105,7 @@ class PlaceController {
       checkIn,
       checkOut,
       maxGuests,
+      price,
     } = req.body;
     jwt.verify(token, process.env.JWT_SECRET, {}, async (err, userData) => {
       if (err) throw new err();
@@ -118,6 +121,7 @@ class PlaceController {
           checkIn,
           checkOut,
           maxGuests,
+          price,
         });
         await placeDoc.save();
         res.json("done");

@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const photosMiddleware = require("../app/middlewares/uploadPhotosMiddleware");
-const PlaceController = require("../app/controllers/PlaceController");
+const PlaceController = require("../app/controllers/UserPlacesController");
 
 router.post("/new/upload-by-link", PlaceController.uploadPhotoByLink);
 router.post(

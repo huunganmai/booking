@@ -17,6 +17,7 @@ function PlaceForm () {
     const [checkIn, setCheckIn] = useState('');
     const [checkOut, setCheckOut] = useState('');
     const [maxGuests, setMaxGuests] = useState(1);
+    const [price, setPrice] = useState(1);
     const [redirect, setRedirect] = useState('')
 
     const {id} = useParams();
@@ -24,7 +25,7 @@ function PlaceForm () {
         if(!id) {
             return;
         }
-        axios.get('/places/' + id)
+        axios.get('/user-places/' + id)
             .then(res => {
                 const {data} = res
                 setTitle(data.title)
@@ -36,20 +37,21 @@ function PlaceForm () {
                 setCheckIn(data.checkIn)
                 setCheckOut(data.checkOut)
                 setMaxGuests(data.maxGuests)
+                setPrice(data.price)
             })
             .catch(err => console.log(err))
     }, [id])
 
     async function savePlace (e) {
         e.preventDefault();
-        const placeData = {title, address, addedPhotos, description, perks, extraInfo, checkIn, checkOut, maxGuests}
+        const placeData = {title, address, addedPhotos, description, perks, extraInfo, checkIn, checkOut, maxGuests, price,}
         if (id) {
-            await axios.put('places/new', {
+            await axios.put('user-places/new', {
                 id, ...placeData,
             });
             setRedirect('/account/places')
         } else {
-            await axios.post('/places/new', placeData);
+            await axios.post('/user-places/new', placeData);
             setRedirect('/account/places')
         }
     }
@@ -113,7 +115,7 @@ function PlaceForm () {
                         description={"add check in and out time"}
                         medium={true}
                         />
-                        <div className="mt-1 grid gap-4 sm:grid-cols-3">
+                        <div className="mt-1 grid gap-4 sm:grid-cols-4">
                             <div>
                                 <h3 className="-mb-2">Check in time</h3>
                                 <input 
@@ -139,6 +141,15 @@ function PlaceForm () {
                                     placeholder="3"
                                     value={maxGuests} 
                                     onChange={ e => setMaxGuests(e.target.value)}
+                                />
+                            </div>
+                            <div>
+                                <h3 className="-mb-2">Price per night</h3>
+                                <input 
+                                    type="number" 
+                                    placeholder="100"
+                                    value={price} 
+                                    onChange={ e => setPrice(e.target.value)}
                                 />
                             </div>
                         </div>

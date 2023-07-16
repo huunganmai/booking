@@ -1,3 +1,3 @@
-import OnePlace from './OnePlace'
+import SinglePlace from './SinglePlace'
 
-export {OnePlace}
+export {SinglePlace}

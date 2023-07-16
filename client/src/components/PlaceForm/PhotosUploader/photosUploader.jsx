@@ -3,13 +3,14 @@ import axios from "axios";
 import PropTypes from "prop-types"
 
 import Title from "../../Title";
+import { StarIcon, TrashIcon } from "../../Icons";
 
 function PhotosUploader ({addedPhotos, onChange}) {
     const [photoLink, setPhotoLink] = useState('');
     async function addPhotoByLink(e) {
         e.preventDefault()
         try {
-            const {data:filename} = await axios.post('/places/new/upload-by-link', {link: photoLink})
+            const {data:filename} = await axios.post('/user-places/new/upload-by-link', {link: photoLink})
             onChange(prev => {
                 return [...prev, filename]
             })
@@ -21,13 +22,12 @@ function PhotosUploader ({addedPhotos, onChange}) {
 
     function uploadPhoto (e) {
         const files = e.target.files;
-        console.log(e)
         const data = new FormData();
         const fileLength = files.length;
         for (let i = 0; i < fileLength; i++) {
             data.append('photos', files[i])
         }
-        axios.post('/places/new/upload-from-computer', data, {
+        axios.post('/user-places/new/upload-from-computer', data, {
             headers: {'Content-Type':'multipart/form-data'}
         })
         .then(res => {
@@ -40,6 +40,19 @@ function PhotosUploader ({addedPhotos, onChange}) {
             alert('Can\'t upload image from your computer')
     })
     }
+
+    function removePhoto (e,filename) {
+        e.preventDefault()
+        onChange([...addedPhotos.filter(photo => photo !== filename)])
+    }
+
+    function selectMainPhoto (e, filename) {
+        e.preventDefault()
+        const addedPhotosWithoutSelected = addedPhotos.filter(photo => photo !== filename)
+        const newAddedPhotos = [filename, ...addedPhotosWithoutSelected]
+        onChange(newAddedPhotos)
+    }
+
     return (
         <>
             <Title 
@@ -58,8 +71,21 @@ function PhotosUploader ({addedPhotos, onChange}) {
             </div>
             <div className="mt-2 gap-2 items-center grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
                 { addedPhotos.length > 0 && addedPhotos.map((link, index) => (
-                    <div key={index} className="h-32 flex">
+                    <div key={index} className="relative h-32 flex">
                         <img className="rounded-2xl w-full object-cover" src={"http://localhost:4000/uploads/" + link} />
+                        <button onClick={(e) => removePhoto(e,link)} className="cursor-pointer absolute top-1 right-1 text-white bg-black bg-opacity-50 px-3 py-2 rounded-2xl">
+                            <TrashIcon />
+                        </button>
+                        {link === addedPhotos[0] && (
+                            <button onClick={(e) => selectMainPhoto(e,link)} className="cursor-pointer absolute top-1 left-1 text-white bg-black bg-opacity-50 px-3 py-2 rounded-2xl">
+                                <StarIcon type={"solid"}/>
+                            </button>
+                        )}
+                        {link !== addedPhotos[0] && (
+                            <button onClick={(e) => selectMainPhoto(e,link)} className="cursor-pointer absolute top-1 left-1 text-white bg-black bg-opacity-50 px-3 py-2 rounded-2xl">
+                                <StarIcon type={"outline"}/>
+                            </button>
+                        )}
                     </div>
                 ))}
                 <label className="flex cursor-pointer gap-1 justify-center items-center border bg-transparent rounded-2xl p-8 text-gray-600 h-full">

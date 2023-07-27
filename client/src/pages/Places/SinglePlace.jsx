@@ -2,12 +2,14 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
-import {CloseIcon, PhotosIcon} from "../../components/Icons"
+import { MapIcon, } from "../../components/Icons"
+import {BookingWidget} from "../../components/Place"
+import PlaceGallery from "../../components/Place/Gallery"
+import PlaceAddressLink from "../../components/Place/Address"
 
 function SinglePlace () {
     const {id} = useParams()
     const [place, setPlace] = useState(null)
-    const [showAllPhotos, setShowAllPhotos] = useState(false)
 
     useEffect(() => {
         if(!id) {
@@ -24,55 +26,30 @@ function SinglePlace () {
 
     if(!place) return ''
 
-    if(showAllPhotos) {
-        return (
-            <div className="absolute bg-white min-w-full min-h-screen">
-                <div className="grid gap-2 bg-black p-8">
-                    <div>
-                        <h2 className="text-3xl text-white">Photos of {place.title}</h2>
-                        <button onClick={() => setShowAllPhotos(false)} className="flex fixed right-8 top-8 rounded-2xl px-2 py-1 bg-white text-black" >
-                            <CloseIcon />
-                            Close photos
-                        </button>
-                    </div>
-                    {place?.photos.length > 0 && place.photos.map((photo, index) => (
-                        <div key={index}>
-                            <img src={"http://localhost:4000/uploads/" + photo} alt="" />
-                        </div>
-                    ))}
-                </div>
-            </div>
-        )
-    }
+    
 
     return (
-        <div className="mt-4 pt-4 bg-gray-100">
+        <div className="mx-16 mt-4 pt-4 bg-gray-100">
             <h1>{place?.title}</h1>
-            <a className="block font-semibold underline" target="\_blank" href={'https://maps.google.com/?q=' + place.address}>{place.address}</a>
-            <div className="relative" >
-                <div className="grid gap-2 grid-cols-[2fr_1fr]">
-                    <div>
-                        {place.photos?.[0] && (
-                            <div>
-                                <img className="aspect-square object-cover" src={"http://localhost:4000/uploads/" + place.photos[0]} alt="" />
-                            </div>
-                        )}
+            <PlaceAddressLink place={place} />
+            <PlaceGallery place={place}/>
+            <div className="grid grid-cols-2 mt-4">
+                <div>
+                    <div className="">
+                        <h2 className="font-semibold text-2xl">Description</h2>
+                        {place.description}
                     </div>
-                    <div className="grid">
-                        {place.photos?.[1] && (
-                                <img className="aspect-square object-cover" src={"http://localhost:4000/uploads/" + place.photos[1]} alt="" />
-                        )}
-                        <div className="overflow-hidden">
-                            {place.photos?.[2] && (
-                                <img className="aspect-square object-cover relative top-2 " src={"http://localhost:4000/uploads/" + place.photos[2]} alt="" />
-                            )}
-                        </div>
-                    </div>
+                    Check-in: {place.checkIn}<br/>
+                    Check-out: {place.checkOut}<br/>
+                    Max number of guest: {place.maxGuests}
                 </div>
-                <button onClick={() => setShowAllPhotos(true)} className="flex gap-1 absolute bottom-2 right-2 px-4 py-2 bg-gray-500 rounded-2xl border border-black">
-                    <PhotosIcon />
-                    See more photos
-                </button>
+                <BookingWidget place={place} />
+            </div>
+            <div className="bg-white -mx-8 mt-8 px-8 py-8 border-t">
+                <div>
+                    <h2 className="font-semibold text-2xl">Extra Info</h2>
+                </div>
+                <div className="mb-4 mt-2 text-sm text-gray-700 leading-5">{place.extraInfo}</div>
             </div>
         </div>
     )

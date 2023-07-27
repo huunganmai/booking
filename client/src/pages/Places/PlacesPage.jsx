@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom"
-
-
-import { AddIcon } from "../components/Icons";
 import { useEffect, useState } from "react";
 import axios from "axios";
+
+import { AddIcon } from "../../components/Icons";
+import {PlaceImage} from "../../components/Place";
 
 export default function PlacesPage() {
     const [places, setPlaces] = useState([])
@@ -32,9 +32,7 @@ export default function PlacesPage() {
                 {places.length > 0 && places.map((place, index) => (
                     <Link to={'/account/places/' + place._id} key= {index} className="flex cursor-pointer bg-gray-200 p-4 m-2 rounded-2xl">
                         <div className="flex h-32 w-32 bg-gray-300 grow-0 shrink-0">
-                            {place.photos.length > 0 && (
-                                <img className="object-cover" src={"http://localhost:4000/uploads/" + place.photos[0]} alt="" />
-                            )}
+                            <PlaceImage place={place}/>
                         </div>
                         <div className="grow-0 shrink">
                             <h2 className="text-xl">{place.title}</h2>

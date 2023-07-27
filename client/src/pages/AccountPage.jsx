@@ -1,5 +1,5 @@
 import { useContext, useState } from "react"
-import { Link, Navigate, Outlet} from "react-router-dom"
+import { Link, Navigate, Outlet, useLocation} from "react-router-dom"
 import axios from "axios"
 
 import { UserContext } from "../UserContext"
@@ -7,8 +7,15 @@ import { HouseIcon, ListIcon, UserIcon } from "../components/Icons"
 
 export default function AccountPage() {
     const [redirect, setRedirect] = useState(null)
-    const [subpage, setSubpage] = useState('profile')
+
     const {ready, user, setUser} = useContext(UserContext)
+    
+    const {pathname} = useLocation()
+    let subpage = pathname.split('/')?.[2]
+
+    if(subpage === undefined) {
+        subpage = 'profile'
+    }
 
     async function logout() {
         await axios.post('/logout')
@@ -42,15 +49,15 @@ export default function AccountPage() {
     return (
         <div>
             <nav className="w-full gap-2 flex justify-center mt-4">
-                <Link className={linkClassed('profile')} onClick={() => setSubpage('profile')} to={'/account/profile'} >
+                <Link className={linkClassed('profile')} to={'/account/profile'} >
                     <UserIcon />
                     My profile
                 </Link>
-                <Link className={linkClassed('bookings')} onClick={() => setSubpage('bookings')} to={'/account/bookings'}>
+                <Link className={linkClassed('bookings')} to={'/account/bookings'}>
                     <ListIcon />
                     My bookings
                 </Link>
-                <Link className={linkClassed('places')} onClick={() =>setSubpage('places')} to={'/account/places'}>
+                <Link className={linkClassed('places')} to={'/account/places'}>
                     <HouseIcon />
                     My accommodations
                 </Link>
